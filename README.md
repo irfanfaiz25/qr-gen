@@ -45,6 +45,7 @@ API ini memiliki **automatic caching** untuk QR code activation codes (LPA):
 - General QR codes: Save ke `storage/general/`
 
 **Contoh:**
+
 ```bash
 # First request - generates and saves
 curl "http://localhost:3000/api/qr/generate?data=LPA:1\$SMDP\$MY_CODE" -o qr1.png
@@ -88,21 +89,22 @@ Cleans general QR codes older than specified days.
 
 ### Query Parameters
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `data` | string | ✅ Yes | - | Data yang akan di-encode di QR code (URL, text, dll) |
-| `logoUrl` | string | ❌ No | - | URL ke logo image (PNG, JPG, SVG) |
-| `color` | string | ❌ No | `#000000` | Warna QR code (hex format) |
-| `bgColor` | string | ❌ No | `#FFFFFF` | Warna background (hex format) |
-| `size` | integer | ❌ No | `512` | Ukuran QR code dalam pixels (100-2048) |
-| `logoSize` | integer | ❌ No | `20` | Ukuran logo dalam percentage (10-40) |
-| `logoBgColor` | string | ❌ No | `#FFFFFF` | Warna background logo (hex format) |
-| `logoPadding` | integer | ❌ No | `20` | Padding di dalam logo |
-| `errorCorrectionLevel` | string | ❌ No | `H` | Level error correction: L, M, Q, H |
+| Parameter              | Type    | Required | Default   | Description                                          |
+| ---------------------- | ------- | -------- | --------- | ---------------------------------------------------- |
+| `data`                 | string  | ✅ Yes   | -         | Data yang akan di-encode di QR code (URL, text, dll) |
+| `logoUrl`              | string  | ❌ No    | -         | URL ke logo image (PNG, JPG, SVG)                    |
+| `color`                | string  | ❌ No    | `#000000` | Warna QR code (hex format)                           |
+| `bgColor`              | string  | ❌ No    | `#FFFFFF` | Warna background (hex format)                        |
+| `size`                 | integer | ❌ No    | `512`     | Ukuran QR code dalam pixels (100-2048)               |
+| `logoSize`             | integer | ❌ No    | `20`      | Ukuran logo dalam percentage (10-40)                 |
+| `logoBgColor`          | string  | ❌ No    | `#FFFFFF` | Warna background logo (hex format)                   |
+| `logoPadding`          | integer | ❌ No    | `20`      | Padding di dalam logo                                |
+| `errorCorrectionLevel` | string  | ❌ No    | `H`       | Level error correction: L, M, Q, H                   |
 
 ### Response
 
 Returns PNG image binary data with appropriate headers:
+
 - `Content-Type: image/png`
 - `Content-Disposition: inline; filename="qrcode.png"`
 - `Cache-Control: public, max-age=31536000`
@@ -116,6 +118,7 @@ curl "http://localhost:3000/api/qr/generate?data=https://example.com" --output q
 ```
 
 atau di browser:
+
 ```
 http://localhost:3000/api/qr/generate?data=https://example.com
 ```
@@ -127,6 +130,7 @@ curl "http://localhost:3000/api/qr/generate?data=https://example.com&logoUrl=htt
 ```
 
 atau di browser:
+
 ```
 http://localhost:3000/api/qr/generate?data=https://example.com&logoUrl=https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
 ```
@@ -161,61 +165,66 @@ curl "http://localhost:3000/api/qr/generate?data=https://example.com&logoUrl=htt
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>QR Code Generator</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>QR Code Generator</h1>
-    
+
     <!-- Embed QR code as image -->
-    <img src="http://localhost:3000/api/qr/generate?data=https://example.com&logoUrl=https://example.com/logo.png" 
-         alt="QR Code" 
-         width="300">
-    
+    <img
+      src="http://localhost:3000/api/qr/generate?data=https://example.com&logoUrl=https://example.com/logo.png"
+      alt="QR Code"
+      width="300"
+    />
+
     <!-- Dynamic QR code with JavaScript -->
     <script>
-        function generateQR(data, logoUrl) {
-            const params = new URLSearchParams({
-                data: data,
-                logoUrl: logoUrl,
-                logoBgColor: '#FFFFFF',
-                size: 512
-            });
-            
-            return `http://localhost:3000/api/qr/generate?${params.toString()}`;
-        }
-        
-        // Usage
-        const qrUrl = generateQR('https://mywebsite.com', 'https://mywebsite.com/logo.png');
-        console.log(qrUrl);
+      function generateQR(data, logoUrl) {
+        const params = new URLSearchParams({
+          data: data,
+          logoUrl: logoUrl,
+          logoBgColor: "#FFFFFF",
+          size: 512,
+        });
+
+        return `http://localhost:3000/api/qr/generate?${params.toString()}`;
+      }
+
+      // Usage
+      const qrUrl = generateQR(
+        "https://mywebsite.com",
+        "https://mywebsite.com/logo.png"
+      );
+      console.log(qrUrl);
     </script>
-</body>
+  </body>
 </html>
 ```
 
 ### Menggunakan di JavaScript/Node.js
 
 ```javascript
-const axios = require('axios');
-const fs = require('fs');
+const axios = require("axios");
+const fs = require("fs");
 
 async function downloadQRCode() {
-    const params = {
-        data: 'https://example.com',
-        logoUrl: 'https://example.com/logo.png',
-        logoBgColor: '#FFFFFF',
-        size: 1024
-    };
-    
-    const queryString = new URLSearchParams(params).toString();
-    const url = `http://localhost:3000/api/qr/generate?${queryString}`;
-    
-    const response = await axios.get(url, {
-        responseType: 'arraybuffer'
-    });
-    
-    fs.writeFileSync('qrcode.png', response.data);
-    console.log('QR Code saved as qrcode.png');
+  const params = {
+    data: "https://example.com",
+    logoUrl: "https://example.com/logo.png",
+    logoBgColor: "#FFFFFF",
+    size: 1024,
+  };
+
+  const queryString = new URLSearchParams(params).toString();
+  const url = `http://localhost:3000/api/qr/generate?${queryString}`;
+
+  const response = await axios.get(url, {
+    responseType: "arraybuffer",
+  });
+
+  fs.writeFileSync("qrcode.png", response.data);
+  console.log("QR Code saved as qrcode.png");
 }
 
 downloadQRCode();
@@ -224,45 +233,45 @@ downloadQRCode();
 ### Menggunakan di React
 
 ```jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function QRCodeGenerator() {
-    const [qrData, setQrData] = useState('https://example.com');
-    const [logoUrl, setLogoUrl] = useState('https://example.com/logo.png');
-    
-    const generateQRUrl = () => {
-        const params = new URLSearchParams({
-            data: qrData,
-            logoUrl: logoUrl,
-            logoBgColor: '#FFFFFF',
-            size: 512
-        });
-        
-        return `http://localhost:3000/api/qr/generate?${params.toString()}`;
-    };
-    
-    return (
-        <div>
-            <h2>QR Code Generator</h2>
-            <input 
-                type="text" 
-                value={qrData} 
-                onChange={(e) => setQrData(e.target.value)}
-                placeholder="Enter data"
-            />
-            <input 
-                type="url" 
-                value={logoUrl} 
-                onChange={(e) => setLogoUrl(e.target.value)}
-                placeholder="Logo URL"
-            />
-            <img 
-                src={generateQRUrl()} 
-                alt="QR Code"
-                style={{ width: 300, height: 300 }}
-            />
-        </div>
-    );
+  const [qrData, setQrData] = useState("https://example.com");
+  const [logoUrl, setLogoUrl] = useState("https://example.com/logo.png");
+
+  const generateQRUrl = () => {
+    const params = new URLSearchParams({
+      data: qrData,
+      logoUrl: logoUrl,
+      logoBgColor: "#FFFFFF",
+      size: 512,
+    });
+
+    return `http://localhost:3000/api/qr/generate?${params.toString()}`;
+  };
+
+  return (
+    <div>
+      <h2>QR Code Generator</h2>
+      <input
+        type="text"
+        value={qrData}
+        onChange={(e) => setQrData(e.target.value)}
+        placeholder="Enter data"
+      />
+      <input
+        type="url"
+        value={logoUrl}
+        onChange={(e) => setLogoUrl(e.target.value)}
+        placeholder="Logo URL"
+      />
+      <img
+        src={generateQRUrl()}
+        alt="QR Code"
+        style={{ width: 300, height: 300 }}
+      />
+    </div>
+  );
 }
 
 export default QRCodeGenerator;
@@ -270,19 +279,19 @@ export default QRCodeGenerator;
 
 ## 🎨 Color Customization
 
-Hex color format harus menggunakan format `#RRGGBB` atau `RRGGBB`. 
+Hex color format harus menggunakan format `#RRGGBB` atau `RRGGBB`.
 
 **Note**: Di URL, `#` harus di-encode sebagai `%23`
 
 ### Contoh Warna
 
-| Color | Hex Code | URL Encoded |
-|-------|----------|-------------|
-| Black | `#000000` | `%23000000` |
-| White | `#FFFFFF` | `%23FFFFFF` |
-| Blue | `#4A90E2` | `%234A90E2` |
-| Red | `#FF5722` | `%23FF5722` |
-| Green | `#4CAF50` | `%234CAF50` |
+| Color  | Hex Code  | URL Encoded |
+| ------ | --------- | ----------- |
+| Black  | `#000000` | `%23000000` |
+| White  | `#FFFFFF` | `%23FFFFFF` |
+| Blue   | `#4A90E2` | `%234A90E2` |
+| Red    | `#FF5722` | `%23FF5722` |
+| Green  | `#4CAF50` | `%234CAF50` |
 | Purple | `#9C27B0` | `%239C27B0` |
 | Orange | `#FF9800` | `%23FF9800` |
 
@@ -300,7 +309,48 @@ http://localhost:3000/api/qr/generate?data=Test&color=%239C27B0&logoText=HI&logo
 
 ### Deploy ke Production
 
-#### 1. Vercel
+#### 1. PM2 (Recommended for Server)
+
+**Install PM2:**
+
+```bash
+npm install pm2 -g
+```
+
+**Start Application:**
+
+```bash
+# Production mode
+npm run pm2:start:prod
+
+# Or manually
+pm2 start ecosystem.config.js --env production
+```
+
+**Save Process List:**
+
+```bash
+pm2 save
+```
+
+**Setup Auto-start on Boot:**
+
+```bash
+pm2 startup
+```
+
+**Useful Commands:**
+
+```bash
+npm run pm2:logs      # View logs
+npm run pm2:monit     # Monitor
+npm run pm2:reload    # Zero-downtime restart
+npm run pm2:stop      # Stop
+```
+
+📚 **[Read complete PM2 deployment guide →](PM2_DEPLOYMENT.md)**
+
+#### 2. Vercel
 
 ```bash
 # Install Vercel CLI
@@ -311,6 +361,7 @@ vercel
 ```
 
 Buat file `vercel.json`:
+
 ```json
 {
   "version": 2,
@@ -329,7 +380,7 @@ Buat file `vercel.json`:
 }
 ```
 
-#### 2. Heroku
+#### 3. Heroku
 
 ```bash
 # Login ke Heroku
@@ -343,11 +394,12 @@ git push heroku main
 ```
 
 Tambahkan `Procfile`:
+
 ```
 web: node server.js
 ```
 
-#### 3. Railway
+#### 4. Railway
 
 ```bash
 # Install Railway CLI
@@ -359,9 +411,10 @@ railway init
 railway up
 ```
 
-#### 4. Docker
+#### 5. Docker
 
 Buat `Dockerfile`:
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -373,6 +426,7 @@ CMD ["node", "server.js"]
 ```
 
 Build dan run:
+
 ```bash
 docker build -t qr-generator-api .
 docker run -p 3000:3000 qr-generator-api
@@ -391,12 +445,12 @@ API mengembalikan error response dalam format JSON:
 
 ### Common Errors
 
-| Status Code | Message | Solution |
-|-------------|---------|----------|
-| 400 | Parameter "data" is required | Tambahkan parameter `data` |
-| 400 | Invalid hex color | Gunakan format hex yang valid (#RRGGBB) |
-| 400 | Size must be between 100-2048 | Adjust parameter `size` |
-| 500 | Failed to generate QR code | Check server logs |
+| Status Code | Message                       | Solution                                |
+| ----------- | ----------------------------- | --------------------------------------- |
+| 400         | Parameter "data" is required  | Tambahkan parameter `data`              |
+| 400         | Invalid hex color             | Gunakan format hex yang valid (#RRGGBB) |
+| 400         | Size must be between 100-2048 | Adjust parameter `size`                 |
+| 500         | Failed to generate QR code    | Check server logs                       |
 
 ## 📊 Performance Tips
 
@@ -412,49 +466,49 @@ API mengembalikan error response dalam format JSON:
 Run basic QR generation tests:
 
 ```javascript
-const axios = require('axios');
-const fs = require('fs');
+const axios = require("axios");
+const fs = require("fs");
 
 const tests = [
-    {
-        name: 'simple-qr',
-        params: { data: 'https://example.com' }
+  {
+    name: "simple-qr",
+    params: { data: "https://example.com" },
+  },
+  {
+    name: "qr-with-text-logo",
+    params: {
+      data: "https://example.com",
+      logoText: "DINGS",
+      logoBgColor: "#4A90E2",
     },
-    {
-        name: 'qr-with-text-logo',
-        params: {
-            data: 'https://example.com',
-            logoText: 'DINGS',
-            logoBgColor: '#4A90E2'
-        }
+  },
+  {
+    name: "colored-qr",
+    params: {
+      data: "Hello World",
+      color: "#FF5722",
+      logoText: "HI",
+      logoBgColor: "#4CAF50",
     },
-    {
-        name: 'colored-qr',
-        params: {
-            data: 'Hello World',
-            color: '#FF5722',
-            logoText: 'HI',
-            logoBgColor: '#4CAF50'
-        }
-    }
+  },
 ];
 
 async function runTests() {
-    for (const test of tests) {
-        try {
-            const params = new URLSearchParams(test.params);
-            const url = `http://localhost:3000/api/qr/generate?${params}`;
-            
-            const response = await axios.get(url, {
-                responseType: 'arraybuffer'
-            });
-            
-            fs.writeFileSync(`${test.name}.png`, response.data);
-            console.log(`✅ ${test.name} - Success`);
-        } catch (error) {
-            console.error(`❌ ${test.name} - Failed:`, error.message);
-        }
+  for (const test of tests) {
+    try {
+      const params = new URLSearchParams(test.params);
+      const url = `http://localhost:3000/api/qr/generate?${params}`;
+
+      const response = await axios.get(url, {
+        responseType: "arraybuffer",
+      });
+
+      fs.writeFileSync(`${test.name}.png`, response.data);
+      console.log(`✅ ${test.name} - Success`);
+    } catch (error) {
+      console.error(`❌ ${test.name} - Failed:`, error.message);
     }
+  }
 }
 
 runTests();
@@ -473,6 +527,7 @@ npm run test:storage
 ```
 
 This will test:
+
 - LPA activation code generation
 - Cache hit/miss scenarios
 - General QR code generation
@@ -500,6 +555,7 @@ MIT License - feel free to use this project for any purpose.
 ## 🆘 Support
 
 Jika ada pertanyaan atau issue, silakan:
+
 1. Check dokumentasi ini terlebih dahulu
 2. Check existing issues di repository
 3. Create new issue dengan detail lengkap
@@ -517,4 +573,3 @@ Jika ada pertanyaan atau issue, silakan:
 ---
 
 **Made with ❤️ using Node.js and Sharp**
-
